@@ -36,6 +36,23 @@ def show_all():
         print(f"{i}. [{prompt['category']}] {prompt['title']}")
         print(f"   {prompt['content']}")
 
+# 프롬프트 추가 함수
+def add_prompt():
+    print("\n=== 프롬프트 추가 ===")
+    title = input("제목: ")
+    content = input("내용: ")
+    category = input("카테고리: ")
+
+    new_prompt = {
+        "title": title,
+        "content": content,
+        "category": category,
+        "favorite": False
+    }
+
+    prompts.append(new_prompt)
+    print(f"✅ '{title}' 프롬프트가 추가되었습니다!")
+
 # 메인 실행
 def main():
     while True:
@@ -45,7 +62,7 @@ def main():
         if choice == "1":
             show_all()
         elif choice == "2":
-            print("→ 추가 기능 (곧 만들 예정)")
+            add_prompt()
         elif choice == "3":
             print("→ 검색 기능 (곧 만들 예정)")
         elif choice == "4":
