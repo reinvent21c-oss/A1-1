@@ -3,19 +3,19 @@ prompts = [
     {
         "title": "블로그 글쓰기",
         "content": "주제에 맞는 블로그 글을 써줘",
-        "category": "글쓰기",
+        "category": "텍스트 생성",   
         "favorite": False
     },
     {
         "title": "코드 리뷰",
         "content": "이 코드의 문제점을 찾아줘",
-        "category": "개발",
+        "category": "자동화",         
         "favorite": True
     },
     {
         "title": "영어 번역",
         "content": "한국어를 영어로 번역해줘",
-        "category": "번역",
+        "category": "기타",           
         "favorite": False
     }
 ]
@@ -27,7 +27,8 @@ def show_menu():
     print("2. 프롬프트 추가")
     print("3. 프롬프트 검색")
     print("4. 즐겨찾기 보기")
-    print("5. 종료")
+    print("5. 카테고리별 조회")
+    print("6. 종료")
 
     # 전체 목록 보기 함수
 def show_all():
@@ -86,6 +87,41 @@ def show_favorites():
     else:
         print("즐겨찾기한 프롬프트가 없습니다.")
 
+# 카테고리 목록 (전역 변수)
+categories = ["텍스트 생성", "이미지 생성", "영상 생성", "페르소나", "자동화", "기타"]
+
+# 카테고리별 조회 함수
+def show_by_category():
+    print("\n=== 카테고리별 조회 ===")
+    # 카테고리 번호 목록 출력
+    for i, cat in enumerate(categories, 1):
+        print(f"{i}) {cat}")
+
+    choice = input("선택: ")
+
+    # 입력이 1~6 사이 숫자인지 확인
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(categories):
+        print("❌ 올바른 번호를 선택하세요!")
+        return
+
+    # 선택한 카테고리 이름 찾기
+    selected = categories[int(choice) - 1]
+
+    # 해당 카테고리 프롬프트만 모으기
+    results = []
+    for prompt in prompts:
+        if prompt["category"] == selected:
+            results.append(prompt)
+
+    if results:
+        print(f"\n[{selected}] 카테고리 프롬프트:")
+        for i, prompt in enumerate(results, 1):
+            star = "⭐" if prompt["favorite"] else ""
+            print(f"{i}. {prompt['title']} {star}")
+        print(f"\n총 {len(results)}개의 프롬프트")
+    else:
+        print(f"❌ '{selected}' 카테고리에 프롬프트가 없습니다.")
+
 # 메인 실행
 def main():
     while True:
@@ -101,10 +137,12 @@ def main():
         elif choice == "4":
             show_favorites()
         elif choice == "5":
+            show_by_category()
+        elif choice == "6":
             print("프로그램을 종료합니다.")
             break
         else:
-            print("❌ 1~5 중에서 선택하세요!")
+            print("❌ 1~6 중에서 선택하세요!")
 
 # 프로그램 시작
 main()
