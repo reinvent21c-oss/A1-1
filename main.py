@@ -28,9 +28,11 @@ def show_menu():
     print("3. 프롬프트 검색")
     print("4. 즐겨찾기 보기")
     print("5. 카테고리별 조회")
-    print("6. 종료")
+    print("6. 상세보기")
+    print("7. 즐겨찾기 관리")
+    print("8. 종료")
 
-    # 전체 목록 보기 함수
+# 전체 목록 보기 함수
 def show_all():
     print("\n=== 전체 프롬프트 목록 ===")
     for i, prompt in enumerate(prompts, 1):
@@ -122,6 +124,28 @@ def show_by_category():
     else:
         print(f"❌ '{selected}' 카테고리에 프롬프트가 없습니다.")
 
+def show_detail():
+    print("\n=== 프롬프트 상세 보기 ===")
+    show_all()  # 목록 먼저 보여주기
+    
+    num = input("번호 입력: ")
+    
+    if not num.isdigit() or int(num) < 1 or int(num) > len(prompts):
+        print("❌ 올바른 번호를 입력하세요!")
+        return
+    
+    p = prompts[int(num) - 1]
+    star = "⭐" if p["favorite"] else "☆"
+    
+    print("\n────────────────────────────")
+    print(f"제목: {p['title']}")
+    print(f"카테고리: {p['category']}")
+    print(f"즐겨찾기: {star}")
+    print("────────────────────────────")
+    print("내용:")
+    print(p['content'])
+    print("────────────────────────────")
+
 # 메인 실행
 def main():
     while True:
@@ -139,10 +163,14 @@ def main():
         elif choice == "5":
             show_by_category()
         elif choice == "6":
+            show_detail()        # ← 추가
+        elif choice == "7":
+            pass                 # ← 다음 단계에서 구현
+        elif choice == "8":      # ← 6에서 8로 변경
             print("프로그램을 종료합니다.")
             break
         else:
-            print("❌ 1~6 중에서 선택하세요!")
+            print("❌ 1~8 중에서 선택하세요!")
 
 # 프로그램 시작
 main()
