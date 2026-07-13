@@ -29,6 +29,13 @@ def show_menu():
     print("4. 즐겨찾기 보기")
     print("5. 종료")
 
+    # 전체 목록 보기 함수
+def show_all():
+    print("\n=== 전체 프롬프트 목록 ===")
+    for i, prompt in enumerate(prompts, 1):
+        print(f"{i}. [{prompt['category']}] {prompt['title']}")
+        print(f"   {prompt['content']}")
+
 # 메인 실행
 def main():
     while True:
@@ -36,7 +43,7 @@ def main():
         choice = input("\n선택하세요: ")
 
         if choice == "1":
-            print("→ 전체 목록 기능 (곧 만들 예정)")
+            show_all()
         elif choice == "2":
             print("→ 추가 기능 (곧 만들 예정)")
         elif choice == "3":
