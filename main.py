@@ -1,24 +1,53 @@
-#프롬프트 데이터를 저장할 리스트 (딕셔너리 3개 담기)
+# 시드 데이터
 prompts = [
     {
-        "title": "회의록 정리 프롬프트 v2",
-        "content": "너는 웹에이전시 PM을 보조하는 회의 기록 담당자다. 회의 내용을 7개 항목으로 정리한다.",
-        "category": "자동화",
+        "title": "블로그 글쓰기",
+        "content": "주제에 맞는 블로그 글을 써줘",
+        "category": "글쓰기",
         "favorite": False
     },
     {
-        "title": "영어 번역 프롬프트",
-        "content": "다음 문장을 자연스운 영어로 번역해줘",
-        "category": "텍스트 생성",
+        "title": "코드 리뷰",
+        "content": "이 코드의 문제점을 찾아줘",
+        "category": "개발",
         "favorite": True
     },
     {
-        "title": "이미지 생성 키워드",
-        "content": "a cozy coffee shop, warm lighting, atercolor style",
-        "category": "이미지 생성",
+        "title": "영어 번역",
+        "content": "한국어를 영어로 번역해줘",
+        "category": "번역",
         "favorite": False
     }
 ]
 
-#잘 담겼는지 확인 (테스트용)
-print(prompts)
+# 메뉴 출력 함수
+def show_menu():
+    print("\n=== 프롬프트 관리 프로그램 ===")
+    print("1. 전체 목록 보기")
+    print("2. 프롬프트 추가")
+    print("3. 프롬프트 검색")
+    print("4. 즐겨찾기 보기")
+    print("5. 종료")
+
+# 메인 실행
+def main():
+    while True:
+        show_menu()
+        choice = input("\n선택하세요: ")
+
+        if choice == "1":
+            print("→ 전체 목록 기능 (곧 만들 예정)")
+        elif choice == "2":
+            print("→ 추가 기능 (곧 만들 예정)")
+        elif choice == "3":
+            print("→ 검색 기능 (곧 만들 예정)")
+        elif choice == "4":
+            print("→ 즐겨찾기 기능 (곧 만들 예정)")
+        elif choice == "5":
+            print("프로그램을 종료합니다.")
+            break
+        else:
+            print("❌ 1~5 중에서 선택하세요!")
+
+# 프로그램 시작
+main()
