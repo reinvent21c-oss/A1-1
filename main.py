@@ -53,6 +53,24 @@ def add_prompt():
     prompts.append(new_prompt)
     print(f"✅ '{title}' 프롬프트가 추가되었습니다!")
 
+# 프롬프트 검색 함수
+def search_prompt():
+    print("\n=== 프롬프트 검색 ===")
+    keyword = input("검색어를 입력하세요: ")
+    
+    results = []
+    for prompt in prompts:
+        if keyword in prompt["title"] or keyword in prompt["content"]:
+            results.append(prompt)
+    
+    if results:
+        print(f"\n🔍 '{keyword}' 검색 결과: {len(results)}개")
+        for i, prompt in enumerate(results, 1):
+            print(f"{i}. [{prompt['category']}] {prompt['title']}")
+            print(f"   {prompt['content']}")
+    else:
+        print(f"❌ '{keyword}'에 해당하는 프롬프트가 없습니다.")
+
 # 메인 실행
 def main():
     while True:
@@ -64,7 +82,7 @@ def main():
         elif choice == "2":
             add_prompt()
         elif choice == "3":
-            print("→ 검색 기능 (곧 만들 예정)")
+            search_prompt()
         elif choice == "4":
             print("→ 즐겨찾기 기능 (곧 만들 예정)")
         elif choice == "5":
