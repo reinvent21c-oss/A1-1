@@ -33,7 +33,8 @@ def show_menu():
 def show_all():
     print("\n=== 전체 프롬프트 목록 ===")
     for i, prompt in enumerate(prompts, 1):
-        print(f"{i}. [{prompt['category']}] {prompt['title']}")
+        star = "⭐" if prompt["favorite"] else ""
+        print(f"{i}. [{prompt['category']}] {prompt['title']} {star}")
         print(f"   {prompt['content']}")
 
 # 프롬프트 추가 함수
@@ -62,7 +63,6 @@ def search_prompt():
     for prompt in prompts:
         if keyword in prompt["title"] or keyword in prompt["content"]:
             results.append(prompt)
-    
     if results:
         print(f"\n🔍 '{keyword}' 검색 결과: {len(results)}개")
         for i, prompt in enumerate(results, 1):
@@ -70,6 +70,21 @@ def search_prompt():
             print(f"   {prompt['content']}")
     else:
         print(f"❌ '{keyword}'에 해당하는 프롬프트가 없습니다.")
+
+# 즐겨찾기 보기 함수
+def show_favorites():
+    print("\n=== ⭐ 즐겨찾기 목록 ===")
+    results = []
+    for prompt in prompts:
+        if prompt["favorite"] == True:
+            results.append(prompt)
+    
+    if results:
+        for i, prompt in enumerate(results, 1):
+            print(f"{i}. [{prompt['category']}] {prompt['title']}")
+            print(f"   {prompt['content']}")
+    else:
+        print("즐겨찾기한 프롬프트가 없습니다.")
 
 # 메인 실행
 def main():
@@ -84,7 +99,7 @@ def main():
         elif choice == "3":
             search_prompt()
         elif choice == "4":
-            print("→ 즐겨찾기 기능 (곧 만들 예정)")
+            show_favorites()
         elif choice == "5":
             print("프로그램을 종료합니다.")
             break
