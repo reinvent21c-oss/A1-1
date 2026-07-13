@@ -74,6 +74,27 @@ def search_prompt():
     else:
         print(f"❌ '{keyword}'에 해당하는 프롬프트가 없습니다.")
 
+def toggle_favorite():
+    # 1. 먼저 목록을 보여줘요 (번호를 골라야 하니까!)
+    for i, p in enumerate(prompts):
+        star = "⭐" if p["favorite"] else "☆"
+        print(f"{i+1}. {star} [{p['category']}] {p['title']}")
+
+    # 2. 사용자에게 번호를 물어봐요
+    num = int(input("\n즐겨찾기를 바꿀 번호: "))
+
+    # 3. 고른 프롬프트를 찾아요 (번호는 1부터, 리스트는 0부터라서 -1)
+    target = prompts[num - 1]
+
+    # 4. 핵심! 별표를 켜고 끄기 (반대로 뒤집기!)
+    target["favorite"] = not target["favorite"]
+
+    # 5. 결과를 알려줘요
+    if target["favorite"]:
+        print(f"⭐ '{target['title']}'을(를) 즐겨찾기에 추가했습니다!")
+    else:
+        print(f"☆ '{target['title']}'을(를) 즐겨찾기에서 해제했습니다!")
+
 # 즐겨찾기 보기 함수
 def show_favorites():
     print("\n=== ⭐ 즐겨찾기 목록 ===")
@@ -126,7 +147,9 @@ def show_by_category():
 
 def show_detail():
     print("\n=== 프롬프트 상세 보기 ===")
-    show_all()  # 목록 먼저 보여주기
+    for i, prompt in enumerate(prompts, 1):
+        star = "⭐" if prompt["favorite"] else ""
+        print(f"{i}. [{prompt['category']}] {prompt['title']} {star}")
     
     num = input("번호 입력: ")
     
@@ -163,10 +186,10 @@ def main():
         elif choice == "5":
             show_by_category()
         elif choice == "6":
-            show_detail()        # ← 추가
+            show_detail()        
         elif choice == "7":
-            pass                 # ← 다음 단계에서 구현
-        elif choice == "8":      # ← 6에서 8로 변경
+            toggle_favorite()
+        elif choice == "8":      
             print("프로그램을 종료합니다.")
             break
         else:
