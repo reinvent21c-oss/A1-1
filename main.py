@@ -122,7 +122,7 @@ def show_by_category():
 
     choice = input("선택: ")
 
-    # 입력이 1~6 사이 숫자인지 확인
+    # 입력이 1~8 사이 숫자인지 확인
     if not choice.isdigit() or int(choice) < 1 or int(choice) > len(categories):
         print("❌ 올바른 번호를 선택하세요!")
         return
