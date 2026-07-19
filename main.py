@@ -20,6 +20,14 @@ prompts = [
     }
 ]
 
+# 빈 값이면 다시 묻는 입력 보조 함수
+def input_required(question):
+    while True:
+        value = input(question).strip()
+        if value:
+            return value
+        print("❌ 빈 값은 입력할 수 없습니다. 다시 입력해주세요.")
+
 # 메뉴 출력 함수
 def show_menu():
     print("\n=== 프롬프트 관리 프로그램 ===")
@@ -43,9 +51,9 @@ def show_all():
 # 프롬프트 추가 함수
 def add_prompt():
     print("\n=== 프롬프트 추가 ===")
-    title = input("제목: ")
-    content = input("내용: ")
-    category = input("카테고리: ")
+    title = input_required("제목: ")
+    content = input_required("내용: ")
+    category = input_required("카테고리: ")
 
     new_prompt = {
         "title": title,
