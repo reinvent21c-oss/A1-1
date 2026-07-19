@@ -84,20 +84,25 @@ def search_prompt():
 
 def toggle_favorite():
     # 1. 먼저 목록을 보여줘요 (번호를 골라야 하니까!)
-    for i, p in enumerate(prompts):
+    for i, p in enumerate(prompts, 1):
         star = "⭐" if p["favorite"] else "☆"
-        print(f"{i+1}. {star} [{p['category']}] {p['title']}")
+        print(f"{i}. {star} [{p['category']}] {p['title']}")
 
     # 2. 사용자에게 번호를 물어봐요
-    num = int(input("\n즐겨찾기를 바꿀 번호: "))
+    num = input("\n즐겨찾기를 바꿀 번호: ")
 
-    # 3. 고른 프롬프트를 찾아요 (번호는 1부터, 리스트는 0부터라서 -1)
-    target = prompts[num - 1]
+    # 3. 입력값 검증 (숫자인지, 1~개수 범위 안인지)
+    if not num.isdigit() or int(num) < 1 or int(num) > len(prompts):
+        print("❌ 올바른 번호를 입력하세요!")
+        return
 
-    # 4. 핵심! 별표를 켜고 끄기 (반대로 뒤집기!)
+    # 4. 고른 프롬프트를 찾아요 (번호는 1부터, 리스트는 0부터라서 -1)
+    target = prompts[int(num) - 1]
+
+    # 5. 핵심! 별표를 켜고 끄기 (반대로 뒤집기!)
     target["favorite"] = not target["favorite"]
 
-    # 5. 결과를 알려줘요
+    # 6. 결과를 알려줘요
     if target["favorite"]:
         print(f"⭐ '{target['title']}'을(를) 즐겨찾기에 추가했습니다!")
     else:
