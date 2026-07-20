@@ -1,21 +1,29 @@
-# 시드 데이터
+# 시드 데이터 (이전 미션에서 실제 작성·사용한 프롬프트 3개)
 prompts = [
     {
-        "title": "블로그 글쓰기",
-        "content": "주제에 맞는 블로그 글을 써줘",
-        "category": "텍스트 생성",   
+        "title": "킥오프 회의록 정리 (웹에이전시 PM)",
+        "content": """너는 웹에이전시 프로젝트 담당자(PM)를 보조하는 회의 기록 및 프로젝트 문서화 담당자다.
+[출력 항목] 회의 목적 / 결정사항 / 후속 실행 항목 / 확인된 사실 / 가능한 리스크 / 확인 필요 사항 / 후속 일정 7개로 구분한다.
+[작성 원칙] 회의 메모에 명시된 내용만 확정 표현으로 쓴다. 없는 내용은 추정해서 사실처럼 쓰지 않는다. 확정 사항과 희망사항·검토 중인 사항을 구분한다. 추론이 필요한 내용은 결정사항이 아니라 가능한 리스크로 분리한다. 정보가 부족하면 '확인 필요'로 표시한다. 인물 실명 대신 역할명을 쓴다.
+[결정사항 기준] '~하기로 했다' 형태만 결정사항으로 분류한다. '가능', '좋겠다', '검토', '제안', '내부 확인 필요'는 결정사항으로 단정하지 않는다.
+[후속 실행 항목] 담당 역할 / 해야 할 일 / 기한 또는 조건 / 비고 표로 작성한다. 기한이 없으면 임의로 날짜를 만들지 않고 '확인 필요'라고 쓴다.""",
+        "category": "페르소나",
         "favorite": False
     },
     {
-        "title": "코드 리뷰",
-        "content": "이 코드의 문제점을 찾아줘",
-        "category": "자동화",         
+        "title": "교육과정 합격 안내 메일 생성",
+        "content": """너는 교육 프로그램 운영 담당자입니다. 아래 응답자에게 보낼 합격 안내 메일 본문을 작성하세요.
+[조건] 공손하고 자연스러운 한국어. 합격 사실을 명확히 안내. 평가점수는 참고용으로만 반영하고 과장된 칭찬은 금지. 다음 단계는 '추후 안내 예정'이라고만 작성. 5문장 이내. 제목 없이 본문만. 끝인사와 발신자명은 작성하지 않는다.
+응답자 이름: {{1.answers.`16d21c54`.textAnswers.answers[].value}}
+평가점수: {{1.answers.`2745eb6b`.textAnswers.answers[].value}}
+판정 결과: 합격""",
+        "category": "텍스트 생성",
         "favorite": True
     },
     {
-        "title": "영어 번역",
-        "content": "한국어를 영어로 번역해줘",
-        "category": "기타",           
+        "title": "FIFA 뉴스 3줄 요약 (Gemini API 호출)",
+        "content": '{"contents":[{"parts":[{"text":"FIFA 2026 관련 뉴스를 한국어 3줄로만 요약해줘. 핵심만. 제목: {{2.title}} 내용: {{escapeJSON(2.description)}}"}]}]}',
+        "category": "자동화",
         "favorite": False
     }
 ]
@@ -46,7 +54,6 @@ def show_all():
     for i, prompt in enumerate(prompts, 1):
         star = "⭐" if prompt["favorite"] else ""
         print(f"{i}. [{prompt['category']}] {prompt['title']} {star}")
-        print(f"   {prompt['content']}")
 
 # 프롬프트 추가 함수
 def add_prompt():
@@ -78,7 +85,6 @@ def search_prompt():
         print(f"\n🔍 '{keyword}' 검색 결과: {len(results)}개")
         for i, prompt in enumerate(results, 1):
             print(f"{i}. [{prompt['category']}] {prompt['title']}")
-            print(f"   {prompt['content']}")
     else:
         print(f"❌ '{keyword}'에 해당하는 프롬프트가 없습니다.")
 
@@ -119,7 +125,6 @@ def show_favorites():
     if results:
         for i, prompt in enumerate(results, 1):
             print(f"{i}. [{prompt['category']}] {prompt['title']}")
-            print(f"   {prompt['content']}")
     else:
         print("즐겨찾기한 프롬프트가 없습니다.")
 
