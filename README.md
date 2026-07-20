@@ -73,7 +73,7 @@ AI를 사용하다 보면 좋은 프롬프트를 매번 다시 찾게 됩니다.
 ## 브랜치 전략
 - main: 배포 가능한 안정 버전
 - feature/favorite-toggle: 즐겨찾기 토글 기능을 독립 개발한 브랜치
-  → 기능 완성 후 main에 병합(merge)했습니다.
+  - 병합 시 main에 변경이 없어 fast-forward로 처리되어, git log 그래프에는 분기가 남지 않음
 
 ## 만든 사람
 
