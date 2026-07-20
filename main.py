@@ -1,3 +1,24 @@
+import json
+import os
+
+DATA_FILE = "prompts.json"
+
+# 시작 시 호출: 파일이 있으면 불러오고, 없거나 깨졌으면 시드(seed) 유지
+def load_prompts(seed):
+    if not os.path.exists(DATA_FILE):
+        return seed
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        print("⚠️ 저장 파일을 읽을 수 없어 기본 데이터로 시작합니다.")
+        return seed
+
+# 데이터가 바뀔 때마다 호출: 현재 prompts를 JSON 파일에 저장
+def save_prompts():
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(prompts, f, ensure_ascii=False, indent=2)
+
 # 시드 데이터 (이전 미션에서 실제 작성·사용한 프롬프트 3개)
 prompts = [
     {
@@ -27,6 +48,8 @@ prompts = [
         "favorite": False
     }
 ]
+
+prompts = load_prompts(prompts)
 
 # 빈 값이면 다시 묻는 입력 보조 함수
 def input_required(question):
@@ -70,6 +93,7 @@ def add_prompt():
     }
 
     prompts.append(new_prompt)
+    save_prompts()
     print(f"✅ '{title}' 프롬프트가 추가되었습니다!")
 
 # 프롬프트 검색 함수
@@ -107,6 +131,7 @@ def toggle_favorite():
 
     # 5. 핵심! 별표를 켜고 끄기 (반대로 뒤집기!)
     target["favorite"] = not target["favorite"]
+    save_prompts()
 
     # 6. 결과를 알려줘요
     if target["favorite"]:
