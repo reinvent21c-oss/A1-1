@@ -81,8 +81,7 @@ prompts = [
         "title": "킥오프 회의록 정리 (웹에이전시 PM)",
         "content": "너는 웹에이전시 프로젝트 담당자(PM)를 보조하는...",
         "category": "페르소나",
-        "favorite": False,
-        "views": 0
+        "favorite": False
     },
     ...
 ]
