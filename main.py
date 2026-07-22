@@ -1,3 +1,24 @@
+import json
+import os
+
+DATA_FILE = "prompts.json"
+
+# 시작 시 호출: 파일이 있으면 불러오고, 없거나 깨졌으면 시드(seed) 유지
+def load_prompts(seed):
+    if not os.path.exists(DATA_FILE):
+        return seed
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        print("⚠️ 저장 파일을 읽을 수 없어 기본 데이터로 시작합니다.")
+        return seed
+
+# 데이터가 바뀔 때마다 호출: 현재 prompts를 JSON 파일에 저장
+def save_prompts():
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(prompts, f, ensure_ascii=False, indent=2)
+
 # 시드 데이터 (이전 미션에서 실제 작성·사용한 프롬프트 3개)
 prompts = [
     {
@@ -28,6 +49,8 @@ prompts = [
     }
 ]
 
+prompts = load_prompts(prompts)
+
 # 빈 값이면 다시 묻는 입력 보조 함수
 def input_required(question):
     while True:
@@ -46,7 +69,11 @@ def show_menu():
     print("5. 카테고리별 조회")
     print("6. 상세보기")
     print("7. 즐겨찾기 관리")
-    print("8. 종료")
+    print("8. 프롬프트 수정")
+    print("9. 프롬프트 삭제")
+    print("10. 조회수 Top 목록")
+    print("11. Markdown 내보내기")
+    print("0. 종료")
 
 # 전체 목록 보기 함수
 def show_all():
@@ -66,10 +93,12 @@ def add_prompt():
         "title": title,
         "content": content,
         "category": category,
-        "favorite": False
+        "favorite": False,
+        "views": 0
     }
 
     prompts.append(new_prompt)
+    save_prompts()
     print(f"✅ '{title}' 프롬프트가 추가되었습니다!")
 
 # 프롬프트 검색 함수
@@ -107,6 +136,7 @@ def toggle_favorite():
 
     # 5. 핵심! 별표를 켜고 끄기 (반대로 뒤집기!)
     target["favorite"] = not target["favorite"]
+    save_prompts()
 
     # 6. 결과를 알려줘요
     if target["favorite"]:
@@ -176,16 +206,131 @@ def show_detail():
         return
     
     p = prompts[int(num) - 1]
+    p["views"] = p.get("views", 0) + 1
+    save_prompts()
     star = "⭐" if p["favorite"] else "☆"
     
     print("\n────────────────────────────")
     print(f"제목: {p['title']}")
     print(f"카테고리: {p['category']}")
     print(f"즐겨찾기: {star}")
+    print(f"조회수: {p['views']}회")
     print("────────────────────────────")
     print("내용:")
     print(p['content'])
     print("────────────────────────────")
+
+# 내보낸 Markdown 파일을 모아둘 폴더
+EXPORT_DIR = "exports"
+
+# 프롬프트 수정 함수
+def edit_prompt():
+    print("\n=== 프롬프트 수정 ===")
+    if not prompts:
+        print("수정할 프롬프트가 없습니다.")
+        return
+
+    for i, p in enumerate(prompts, 1):
+        print(f"{i}. [{p['category']}] {p['title']}")
+
+    num = input("\n수정할 번호: ")
+    if not num.isdigit() or int(num) < 1 or int(num) > len(prompts):
+        print("❌ 올바른 번호를 입력하세요!")
+        return
+
+    target = prompts[int(num) - 1]
+    print("\n(엔터만 누르면 기존 값을 그대로 둡니다)")
+    title = input(f"제목 [{target['title']}]: ").strip()
+    content = input("내용: ").strip()
+    category = input(f"카테고리 [{target['category']}]: ").strip()
+
+    if title:
+        target["title"] = title
+    if content:
+        target["content"] = content
+    if category:
+        target["category"] = category
+
+    save_prompts()
+    print(f"✅ '{target['title']}' 프롬프트를 수정했습니다!")
+
+# 프롬프트 삭제 함수
+def delete_prompt():
+    print("\n=== 프롬프트 삭제 ===")
+    if not prompts:
+        print("삭제할 프롬프트가 없습니다.")
+        return
+
+    for i, p in enumerate(prompts, 1):
+        print(f"{i}. [{p['category']}] {p['title']}")
+
+    num = input("\n삭제할 번호: ")
+    if not num.isdigit() or int(num) < 1 or int(num) > len(prompts):
+        print("❌ 올바른 번호를 입력하세요!")
+        return
+
+    target = prompts[int(num) - 1]
+    answer = input(f"'{target['title']}'을(를) 정말 삭제할까요? (y/n): ").strip().lower()
+    if answer != "y":
+        print("삭제를 취소했습니다.")
+        return
+
+    prompts.pop(int(num) - 1)
+    save_prompts()
+    print(f"🗑️ '{target['title']}' 프롬프트를 삭제했습니다!")
+
+# 정렬 기준: 프롬프트 하나를 받아 조회수를 돌려준다
+def get_views(prompt):
+    return prompt.get("views", 0)
+
+# 조회수 Top 목록 함수
+def show_top_views():
+    print("\n=== 📊 조회수 Top 목록 ===")
+    if not prompts:
+        print("등록된 프롬프트가 없습니다.")
+        return
+
+    ranked = sorted(prompts, key=get_views, reverse=True)
+    for i, p in enumerate(ranked, 1):
+        print(f"{i}. [{p['category']}] {p['title']} - {get_views(p)}회")
+
+# 카테고리별 Markdown 내보내기 함수
+def export_markdown():
+    print("\n=== Markdown 내보내기 ===")
+    if not prompts:
+        print("내보낼 프롬프트가 없습니다.")
+        return
+
+    os.makedirs(EXPORT_DIR, exist_ok=True)
+
+    # 실제 데이터에 들어 있는 카테고리만 모은다
+    found = []
+    for p in prompts:
+        if p["category"] not in found:
+            found.append(p["category"])
+
+    count = 0
+    for cat in found:
+        targets = []
+        for p in prompts:
+            if p["category"] == cat:
+                targets.append(p)
+
+        filename = cat.replace(" ", "_") + ".md"
+        path = os.path.join(EXPORT_DIR, filename)
+
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(f"# {cat}\n\n")
+            for p in targets:
+                star = " ⭐" if p["favorite"] else ""
+                f.write(f"## {p['title']}{star}\n\n")
+                f.write(f"- 조회수: {get_views(p)}회\n\n")
+                f.write(f"{p['content']}\n\n")
+
+        count += 1
+        print(f"  📄 {path} ({len(targets)}개)")
+
+    print(f"✅ {count}개 파일을 내보냈습니다.")
 
 # 메인 실행
 def main():
@@ -207,11 +352,19 @@ def main():
             show_detail()        
         elif choice == "7":
             toggle_favorite()
-        elif choice == "8":      
+        elif choice == "8":
+            edit_prompt()
+        elif choice == "9":
+            delete_prompt()
+        elif choice == "10":
+            show_top_views()
+        elif choice == "11":
+            export_markdown()
+        elif choice == "0":
             print("프로그램을 종료합니다.")
             break
         else:
-            print("❌ 1~8 중에서 선택하세요!")
+            print("❌ 0~11 중에서 선택하세요!")
 
 # 프로그램 시작
 main()
